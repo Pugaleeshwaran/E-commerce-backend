@@ -129,9 +129,15 @@ router.delete("/:id", protect, admin, async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const { collection, size, color, gender, minPrice, MaxPrice, sortBy,
-            search, category, material, brand, limit
+        const {
+            collection,
+            size, color, gender, minPrice, MaxPrice, sortBy,
+            search, category, materials, brand, limit
         } = req.query;
+
+        console.log(req.query);
+        console.log("value", materials);
+
 
         let query = {};
         //filter Logic
@@ -139,12 +145,19 @@ router.get("/", async (req, res) => {
         if (collection && collection.toLocaleLowerCase() !== "all") {
             query.collections = collection;
         }
+        console.log("dei",query);
+
         if (category && category.toLocaleLowerCase() !== "all") {
-            query.categorys = category;
+            console.log("it", category)
+            console.log(query);
+
+            query.category = category;
         }
 
-        if (material) {
-            query.material = { $in: material.split(",") };
+        if (materials) {
+            query.materials = { $in: materials.split(",") };
+            console.log(materials);
+
         }
         if (brand) {
             query.brand = { $in: brand.split(",") };
@@ -173,6 +186,7 @@ router.get("/", async (req, res) => {
         }
 
         //sort Logic
+        let sort = {};
         if (sortBy) {
             switch (sortBy) {
                 case "priceAsc":
